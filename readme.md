@@ -1,10 +1,10 @@
 ### Build
 
-make.sh
+`make.sh`
 
 ### Usage
 
-java -jar PlatformExport.jar <config file> <target path>
+`java -jar PlatformExport.jar <config file> <target path>`
 
 ### Config file
 
