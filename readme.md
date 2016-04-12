@@ -4,7 +4,7 @@
 
 ### Usage
 
-`java -jar PlatformExport.jar <config file> <target folder>`
+`java -jar PlatformExport.jar <path to config file> <path to target folder>`
 
 ### Config file
 
