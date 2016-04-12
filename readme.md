@@ -4,17 +4,37 @@
 
 ### Usage
 
-`java -jar PlatformExport.jar <config file> <target path>`
+`java -jar PlatformExport.jar <config file> <target folder>`
 
 ### Config file
 
-* serverUrl: SWATHub Server URL, such as http://www.swathub.com/
-* username: Your user name
-* apiKey: Your api key, get from 設定-実行ノート-インストール-実行ノート設定
-* workspaceOwner: Owner's name of the workspace which you want to export
-* workspaceName: Name of the workspace which you want to export
-* setID: ID of the test set which you want to export, get from the URL of the test set
-* platforms: List of the platforms you want to export
+#### Config parameters
+
+* serverUrl: the URL of SWATHub Server URL, such as http://www.swathub.com/
+* username: the username of SWATHub Server
+* apiKey: the api key of the user, same as the key for execution node
+* workspaceOwner: the owner's username of the target workspace to export
+* workspaceName: the name of the target workspace to export
+* setID: the unique ID of the test set in the target workspace, which can be got from the test set url. For instance, the set ID is **9** in the url `http://swathub.com/app/support/samples/scenarios/set/9`
+* platforms: the list of the platforms to export
+
+#### Sample config file
+
+```
+{
+  "serverUrl": "http://swathub.com/",
+  "username": "tester",
+  "apiKey": "A7185B82DB6A4EFC9006",
+  "workspaceOwner": "support",
+  "workspaceName": "samples",
+  "setID": "9",
+  "platforms": [
+    "Windows 10 + Firefox",
+    "Windows 10 + Internet Explorer 11",
+    "Windows 10 + Chrome"
+  ]
+}
+```
 
 ### Avaliable platfroms
 
