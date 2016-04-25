@@ -32,9 +32,9 @@ import java.util.Map;
 public class PlatformExport {
 	public static Map<String, String> valueMap = new HashMap<String, String>();
 	static {
-		valueMap.put("type.flow", "ワークフロー");
-		valueMap.put("type.sop", "システムオペレーション");
-		valueMap.put("type.pop", "画面オペレーション");
+		valueMap.put("type.flow", "Flow");
+		valueMap.put("type.sop", "System Operation");
+		valueMap.put("type.pop", "Page Operation");
 	}
 
 	public static String apiGet(URIBuilder url, String user, String pass, JSONObject proxy) throws Exception {
@@ -110,16 +110,16 @@ public class PlatformExport {
 			JSONObject step = steps.getJSONObject(i);
 			if (step.getString("seqNo").equals("")) {
 				row = sheet.createRow(rowCnt++);
-				row.createCell(0).setCellValue("テストケース");
+				row.createCell(0).setCellValue("Test Case");
 				row.getCell(0).setCellStyle(titleStyle);
 				row.createCell(1).setCellValue(step.getString("stepTitle"));
 
 				row = sheet.createRow(rowCnt++);
-				row.createCell(0).setCellValue("パラメータ");
+				row.createCell(0).setCellValue("Parameter");
 				row.getCell(0).setCellStyle(tableHeader);
-				row.createCell(1).setCellValue("変数");
+				row.createCell(1).setCellValue("Name");
 				row.getCell(1).setCellStyle(tableHeader);
-				row.createCell(2).setCellValue("バリュー");
+				row.createCell(2).setCellValue("Value");
 				row.getCell(2).setCellStyle(tableHeader);
 
 				for (int j = 0; j < step.getJSONArray("paramData").length(); j++) {
@@ -150,18 +150,18 @@ public class PlatformExport {
 				row = sheet.createRow(rowCnt++);
 				if (step.getBoolean("executed")) {
 					row.createCell(0).setCellValue(step.getString("seqNo"));
-					row.createCell(1).setCellValue("名前");
+					row.createCell(1).setCellValue("Name");
 					row.getCell(1).setCellStyle(titleStyle);
 					row.createCell(2).setCellValue(title);
 				} else {
 					row.createCell(0).setCellValue(step.getString("seqNo"));
-					row.createCell(1).setCellValue("名前");
+					row.createCell(1).setCellValue("Name");
 					row.getCell(1).setCellStyle(lineDisabled);
 					row.createCell(2).setCellValue(title);
 				}
 
 				row = sheet.createRow(rowCnt++);
-				row.createCell(1).setCellValue("タイプ");
+				row.createCell(1).setCellValue("Type");
 				row.getCell(1).setCellStyle(titleStyle);
 				row.createCell(2).setCellValue(valueMap.get("type." + step.getString("type")));
 
@@ -178,7 +178,7 @@ public class PlatformExport {
 
 				if (comment != null) {
 					row = sheet.createRow(rowCnt++);
-					row.createCell(1).setCellValue("コメント");
+					row.createCell(1).setCellValue("Comment");
 					row.getCell(1).setCellStyle(titleStyle);
 					row.createCell(2).setCellValue(comment.getString("value"));
 				}
@@ -191,11 +191,11 @@ public class PlatformExport {
 				}
 
 				row = sheet.createRow(rowCnt++);
-				row.createCell(1).setCellValue("パラメータ");
+				row.createCell(1).setCellValue("Parameter");
 				row.getCell(1).setCellStyle(tableHeader);
-				row.createCell(2).setCellValue("変数");
+				row.createCell(2).setCellValue("Name");
 				row.getCell(2).setCellStyle(tableHeader);
-				row.createCell(3).setCellValue("バリュー");
+				row.createCell(3).setCellValue("Value");
 				row.getCell(3).setCellStyle(tableHeader);
 
 				for (JSONObject item : paramData) {
@@ -379,7 +379,7 @@ public class PlatformExport {
 				titleStyle.setFont(boldFont);
 
 				HSSFRow row = resultSheet.createRow(rowCnt);
-				row.createCell(0).setCellValue("シナリオ");
+				row.createCell(0).setCellValue("Scenario");
 				row.getCell(0).setCellStyle(titleStyle);
 				row.createCell(1).setCellValue(scenario.getString("name"));
 				rowCnt = rowCnt + 2;
