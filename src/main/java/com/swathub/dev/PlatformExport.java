@@ -236,18 +236,21 @@ public class PlatformExport {
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							ImageIO.write(image, "png", baos);
 
-							int pictureIdx = workbook.addPicture(baos.toByteArray(), Workbook.PICTURE_TYPE_PNG);
-							HSSFPatriarch drawing = sheet.createDrawingPatriarch();
+							try {
+								int pictureIdx = workbook.addPicture(baos.toByteArray(), Workbook.PICTURE_TYPE_PNG);
+								HSSFPatriarch drawing = sheet.createDrawingPatriarch();
 
-							HSSFClientAnchor anchor = creationHelper.createClientAnchor();
-							anchor.setCol1(colCnt);
-							anchor.setRow1(rowCnt);
-							HSSFPicture picture = drawing.createPicture(anchor, pictureIdx);
-							picture.resize();
-
-							colCnt = picture.getPreferredSize().getCol2() + 1;
-							if (picture.getPreferredSize().getRow2() > rowCntTemp) {
-								rowCntTemp = picture.getPreferredSize().getRow2();
+								HSSFClientAnchor anchor = creationHelper.createClientAnchor();
+								anchor.setCol1(colCnt);
+								anchor.setRow1(rowCnt);
+								HSSFPicture picture = drawing.createPicture(anchor, pictureIdx);
+								picture.resize();
+								colCnt = picture.getPreferredSize().getCol2() + 1;
+								if (picture.getPreferredSize().getRow2() > rowCntTemp) {
+									rowCntTemp = picture.getPreferredSize().getRow2();
+								}
+							} catch (IllegalArgumentException e) {
+								System.out.println("Image export error:" + imageUrl.toString());
 							}
 
 							if (size == 5) {
