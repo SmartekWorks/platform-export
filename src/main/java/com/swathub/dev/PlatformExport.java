@@ -297,7 +297,7 @@ public class PlatformExport {
 		JSONObject config = new JSONObject(FileUtils.readFileToString(configFile, "UTF-8"));
 		URIBuilder casesUrl = new URIBuilder(config.getString("serverUrl"));
 		casesUrl.setPath("/api/" + config.getString("workspaceOwner") + "/" +
-				config.getString("workspaceName") + "/sets/" + config.getString("setID") + "/cases");
+				config.getString("workspaceName") + "/sets/" + config.getString("setID") + "/scenarios");
 
 		String apiResult = apiGet(casesUrl, config.getString("username"), config.getString("apiKey"), null);
 		if (apiResult == null) {
