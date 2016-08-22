@@ -16,6 +16,8 @@
 * `workspaceOwner`: the owner's username of the target workspace to export
 * `workspaceName`: the name of the target workspace
 * `setID`: the unique ID of the test set in the target workspace, which can be got from the test set url. For instance, the set ID is **9** in the url `http://swathub.com/app/support/samples/scenarios/set/9`
+* `tags`: Tags filtering the scenarios to export, separated by comma.
+* `status`: Result status, `finished` or `failed` or `ok` or `ng`
 * `platforms`: the list of the platforms to export
 
 #### Sample config file

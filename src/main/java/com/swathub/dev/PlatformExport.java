@@ -30,14 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PlatformExport {
-	public static Map<String, String> valueMap = new HashMap<String, String>();
+	private static Map<String, String> valueMap = new HashMap<String, String>();
 	static {
 		valueMap.put("type.flow", "Flow");
 		valueMap.put("type.sop", "System Operation");
 		valueMap.put("type.pop", "Page Operation");
 	}
 
-	public static String apiGet(URIBuilder url, String user, String pass, JSONObject proxy) throws Exception {
+	private static String apiGet(URIBuilder url, String user, String pass, JSONObject proxy) throws Exception {
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		credsProvider.setCredentials(
 				new AuthScope(url.getHost(), url.getPort()),
@@ -61,8 +61,8 @@ public class PlatformExport {
 		return result;
 	}
 
-	public static int fetchSteps(JSONArray steps, HSSFWorkbook workbook, HSSFCreationHelper creationHelper,
-								  HSSFSheet sheet, int rowCnt, ArrayList<JSONObject> validResults) throws Exception {
+	private static int fetchSteps(JSONArray steps, HSSFWorkbook workbook, HSSFCreationHelper creationHelper,
+								  HSSFSheet sheet, int rowCnt, HashMap<String, JSONObject> validResults, String[] platforms) throws Exception {
 		HSSFRow row;
 		HSSFFont boldFont = workbook.createFont();
 		boldFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -223,7 +223,10 @@ public class PlatformExport {
 					for (int j = 0; j < screenshots.length(); j++) {
 						int rowCntTemp = 0, colCnt = 1, size = 1;
 						String screenshot = screenshots.getString(j).replace("_s.png", ".png");
-						for (JSONObject validResult : validResults) {
+						for (String platform : platforms) {
+							JSONObject validResult = validResults.get(platform);
+							if (validResult == null) continue;
+
 							row.createCell(colCnt).setCellValue(validResult.getString("execPlatform"));
 							URL imageUrl = new URL(validResult.getString("baseURL").concat(screenshot));
 							BufferedImage image;
@@ -270,7 +273,7 @@ public class PlatformExport {
 				rowCnt++;
 			}
 
-			rowCnt = fetchSteps(step.getJSONArray("steps"), workbook, creationHelper, sheet, rowCnt, validResults);
+			rowCnt = fetchSteps(step.getJSONArray("steps"), workbook, creationHelper, sheet, rowCnt, validResults, platforms);
 		}
 
 		return rowCnt;
@@ -298,9 +301,10 @@ public class PlatformExport {
 		URIBuilder casesUrl = new URIBuilder(config.getString("serverUrl"));
 		casesUrl.setPath("/api/" + config.getString("workspaceOwner") + "/" +
 				config.getString("workspaceName") + "/sets/" + config.getString("setID") + "/scenarios");
+		casesUrl.addParameter("tags", config.getString("tags"));
 
 		String apiResult = apiGet(casesUrl, config.getString("username"), config.getString("apiKey"), null);
-		if (apiResult == null) {
+		if (apiResult == null || ("").equals(apiResult)) {
 			System.out.println("Config file is not correct.");
 			return;
 		}
@@ -321,30 +325,41 @@ public class PlatformExport {
 				}
 
 				// get latest result base url for platforms
+				String[] status = new String[config.getJSONArray("status").length()];
+				for (int k = 0; k < config.getJSONArray("status").length(); k++) {
+					status[k] = config.getJSONArray("status").getString(k);
+				}
+
 				String[] platforms = new String[config.getJSONArray("platforms").length()];
 				for (int k = 0; k < config.getJSONArray("platforms").length(); k++) {
 					platforms[k] = config.getJSONArray("platforms").getString(k);
 				}
 
-				ArrayList<JSONObject> validResults = new ArrayList<JSONObject>();
+				String[] platformList = new String[config.getJSONArray("platforms").length()];
+				for (int k = 0; k < config.getJSONArray("platforms").length(); k++) {
+					platformList[k] = config.getJSONArray("platforms").getString(k);
+				}
+
+				HashMap<String, JSONObject> validResults = new HashMap<String, JSONObject>();
+				JSONObject validResult = null;
 				for (int k = 0; k < results.length(); k++) {
 					JSONObject result = results.getJSONObject(k);
-					if (ArrayUtils.contains(platforms, result.getString("execPlatform")) &&
-							result.getString("status").equals("finished") ) {
-						validResults.add(result);
-						platforms = ArrayUtils.removeElement(platforms, result.getString("execPlatform"));
-						if (platforms.length == 0) {
+					if (ArrayUtils.contains(platformList, result.getString("execPlatform")) && ArrayUtils.contains(status, result.getString("status"))) {
+						if (validResult == null) validResult = result;
+						validResults.put(result.getString("execPlatform"), result);
+						platformList = ArrayUtils.removeElement(platformList, result.getString("execPlatform"));
+						if (platformList.length == 0) {
 							break;
 						}
 					}
 				}
-				if (validResults.size() == 0) {
+				if (validResult == null) {
 					System.out.println("No valid result for all platforms, file will not be created.");
 					System.out.println("");
 					continue;
 				}
-				if (platforms.length > 0) {
-					for (String platform : platforms) {
+				if (platformList.length > 0) {
+					for (String platform : platformList) {
 						System.out.println("No valid result for this platform:" + platform);
 					}
 				}
@@ -352,9 +367,9 @@ public class PlatformExport {
 				// get result object
 				URIBuilder resultUrl = new URIBuilder(config.getString("serverUrl"));
 				resultUrl.setPath("/api/" + config.getString("workspaceOwner") + "/" +
-						config.getString("workspaceName") + "/results/" + validResults.get(0).getInt("id"));
+						config.getString("workspaceName") + "/results/" + validResult.getInt("id"));
 				String strResult = apiGet(resultUrl, config.getString("username"), config.getString("apiKey"), null);
-				if (strResult == null) {
+				if (strResult == null || ("").equals(strResult)) {
 					System.out.println("Result not exists, file will not be created.");
 					System.out.println("");
 					continue;
@@ -388,7 +403,7 @@ public class PlatformExport {
 				rowCnt = rowCnt + 2;
 
 				// create result sheet
-				fetchSteps(caseResult.getJSONArray("result"), workbook, creationHelper, resultSheet, rowCnt, validResults);
+				fetchSteps(caseResult.getJSONArray("result"), workbook, creationHelper, resultSheet, rowCnt, validResults, platforms);
 
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				workbook.write(outputStream);
