@@ -19,6 +19,7 @@
 * `tags`: tags filtering the scenarios to export, separated by comma.
 * `status`: the list of result status, `finished`, `failed`, `ok` or `ng`
 * `platforms`: the list of the platforms to export
+* `maxSize`: the max size of platforms to show in one line
 
 #### Sample config file
 

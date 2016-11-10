@@ -7,5 +7,6 @@
   "setID": "",
   "tags":"",
   "status": ["finished", "failed", "ok", "ng"],
-  "platforms": []
+  "platforms": [],
+  "maxSize": 5
 }

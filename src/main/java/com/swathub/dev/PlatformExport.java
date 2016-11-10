@@ -62,7 +62,7 @@ public class PlatformExport {
 	}
 
 	private static int fetchSteps(JSONArray steps, HSSFWorkbook workbook, HSSFCreationHelper creationHelper,
-								  HSSFSheet sheet, int rowCnt, HashMap<String, JSONObject> validResults, String[] platforms) throws Exception {
+								  HSSFSheet sheet, int rowCnt, HashMap<String, JSONObject> validResults, String[] platforms, int maxSize) throws Exception {
 		HSSFRow row;
 		HSSFFont boldFont = workbook.createFont();
 		boldFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -256,7 +256,7 @@ public class PlatformExport {
 								System.out.println("Image export error:" + imageUrl.toString());
 							}
 
-							if (size == 5) {
+							if (size == maxSize) {
 								if (rowCntTemp > rowCnt) rowCnt = rowCntTemp;
 								row = sheet.createRow(rowCnt++);
 								colCnt = 1;
@@ -273,7 +273,7 @@ public class PlatformExport {
 				rowCnt++;
 			}
 
-			rowCnt = fetchSteps(step.getJSONArray("steps"), workbook, creationHelper, sheet, rowCnt, validResults, platforms);
+			rowCnt = fetchSteps(step.getJSONArray("steps"), workbook, creationHelper, sheet, rowCnt, validResults, platforms, maxSize);
 		}
 
 		return rowCnt;
@@ -298,6 +298,11 @@ public class PlatformExport {
 		}
 
 		JSONObject config = new JSONObject(FileUtils.readFileToString(configFile, "UTF-8"));
+		int maxSize = 5;
+		if (config.has("maxSize")) {
+			maxSize = config.getInt("maxSize");
+		}
+
 		URIBuilder casesUrl = new URIBuilder(config.getString("serverUrl"));
 		casesUrl.setPath("/api/" + config.getString("workspaceOwner") + "/" +
 				config.getString("workspaceName") + "/sets/" + config.getString("setID") + "/scenarios");
@@ -403,7 +408,7 @@ public class PlatformExport {
 				rowCnt = rowCnt + 2;
 
 				// create result sheet
-				fetchSteps(caseResult.getJSONArray("result"), workbook, creationHelper, resultSheet, rowCnt, validResults, platforms);
+				fetchSteps(caseResult.getJSONArray("result"), workbook, creationHelper, resultSheet, rowCnt, validResults, platforms, maxSize);
 
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				workbook.write(outputStream);
