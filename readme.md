@@ -1,3 +1,9 @@
+## Platform Export Tool
+
+This is a desktop tool to export the test execution results of a test set in a batch operation. The output is a folder with multiple Excel files.
+* Test cases can be filtered by tags and status.
+* Results on different platforms for the same test case will be integrated into one Excel file.
+
 ### Build
 
 `make.sh`
@@ -15,11 +21,11 @@
 * `apiKey`: the api key for the user, same as the key for execution node
 * `workspaceOwner`: the owner's username of the target workspace to export
 * `workspaceName`: the name of the target workspace
-* `setID`: the unique ID of the test set in the target workspace, which can be got from the test set url. For instance, the set ID is **9** in the url `http://swathub.com/app/support/samples/scenarios/set/9`
+* `setID`: the unique ID (string) of the test set in the target workspace, which can be got from the test set url. For instance, the set ID is **"9"** in the url `http://swathub.com/app/support/samples/scenarios/set/9`
 * `tags`: tags filtering the scenarios to export, separated by comma.
 * `status`: the list of result status, `finished`, `failed`, `ok` or `ng`
 * `platforms`: the list of the platforms to export
-* `maxSize`: the max size of platforms to show in one line
+* `maxSize`: the max size (integer) of platforms to show in one line
 
 #### Sample config file
 
@@ -36,6 +42,7 @@
     "ok",
     "finished"
   ],
+  "maxSize": 6,
   "platforms": [
     "Windows 10 + Firefox",
     "Windows 10 + Internet Explorer 11",
