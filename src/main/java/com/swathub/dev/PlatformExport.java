@@ -94,6 +94,7 @@ public class PlatformExport {
 
 		HSSFCellStyle cellDisabled =  workbook.createCellStyle();
 		cellDisabled.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		cellDisabled.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		cellDisabled.setBorderBottom(CellStyle.BORDER_THIN);
 		cellDisabled.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 		cellDisabled.setBorderLeft(CellStyle.BORDER_THIN);
@@ -105,6 +106,7 @@ public class PlatformExport {
 
 		HSSFCellStyle lineDisabled =  workbook.createCellStyle();
 		lineDisabled.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		lineDisabled.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
 		for (int i = 0; i < steps.length(); i++) {
 			JSONObject step = steps.getJSONObject(i);
