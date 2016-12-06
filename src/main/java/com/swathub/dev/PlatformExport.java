@@ -94,7 +94,6 @@ public class PlatformExport {
 
 		HSSFCellStyle cellDisabled =  workbook.createCellStyle();
 		cellDisabled.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-		cellDisabled.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		cellDisabled.setBorderBottom(CellStyle.BORDER_THIN);
 		cellDisabled.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 		cellDisabled.setBorderLeft(CellStyle.BORDER_THIN);
