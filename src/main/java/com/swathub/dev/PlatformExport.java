@@ -159,6 +159,7 @@ public class PlatformExport {
 					row.createCell(0).setCellValue(step.getString("seqNo"));
 					row.createCell(1).setCellValue("Name");
 					row.getCell(0).setCellStyle(lineDisabled);
+					row.getCell(1).setCellStyle(titleStyle);
 					row.createCell(2).setCellValue(title);
 				}
 
